@@ -8,13 +8,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-@Controller
+@RestController
 @RequestMapping("/test/")
 public class TestController {
 
     @RequestMapping("hh/")
-    public String test(){
-        System.out.println("1");
-        return "test.html";
+    public Map<String , String> test(){
+        Map<String, String> map = new HashMap<>();
+        map.put("name" , "cat");
+        map.put("rating" , "23333");
+        return map;
+
     }
 }
