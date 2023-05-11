@@ -1,34 +1,19 @@
 <template>
-  <div>名称：{{name}}</div>
-  <div>排名：{{rating}}</div>
-  <router-view/>
+  <NavBar></NavBar>
+  <router-view></router-view>
 </template>
 
 
 <script>
-import $ from 'jquery';
-import { ref } from 'vue';
+import NavBar from '@/components/NavBar.vue'
+import "bootstrap/dist/css/bootstrap.min.css"
+import "bootstrap/dist/js/bootstrap"
 
 export default {
-  name:"App",
-  setup:() =>{
-    let name = ref("");
-    let rating = ref("");
-
-    $.ajax({
-      url:"http://localhost:3000/test/hh/",
-      type:"get",
-      success: resp =>{
-        name.value = resp.name;
-        rating.value = resp.rating;
-      }
-    })
-
-    return {
-      name,
-      rating
-    }
+  components:{
+    NavBar
   }
+  
 }
 </script>
 <style>
