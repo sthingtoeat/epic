@@ -2,6 +2,7 @@ package com.yao.backend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.yao.backend.mapper.UserMapper;
+import com.yao.backend.pojo.User;
 import com.yao.backend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,12 @@ public class UserServiceImpl implements UserService {
         queryWrapper.eq("username",username);
         queryWrapper.eq("password",password);
 
-        if(userMapper.selectOne(queryWrapper) == null){
+        User user = userMapper.selectOne(queryWrapper) ;
+        if(user == null){
             return map;
         }
 
+        map.put("userId" , user.getId() + "");
         map.put("error_message" , "success");
 
         return map;
