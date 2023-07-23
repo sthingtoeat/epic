@@ -47,7 +47,8 @@ export default {
         let username = "";
 
         username = localStorage.getItem("username");
-       
+        if(username === "") username = "您还未登录"
+
         return{
           username,
         }

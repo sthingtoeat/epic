@@ -47,16 +47,18 @@ public class WebSocketServer {
         OnlineUserNum ++;
 
         System.out.println("connected！该用户名ID为：" + token +" 当前在线人数为：" + OnlineUserNum);
+        sendToAllUsers("[系统消息]:用户" + this.user.getUsername() + "已上线");
     }
 
 
     @OnClose
     public void onClose() {
         // 关闭链接
-        System.out.println("disconnected");
+        System.out.println("disconnected" + "当前在线人数为：" + OnlineUserNum);
         users.remove(this.user.getId());
         webSocketServerSet.remove(this);
         OnlineUserNum --;
+        sendToAllUsers("[系统消息]:用户" + this.user.getUsername() + "已离线");
     }
 
     @OnMessage
