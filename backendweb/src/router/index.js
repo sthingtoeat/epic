@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import UserIndexView from '../views/user/UserIndexView'
 import ErrorIndexView from '@/views/error/ErrorIndexView'
 import LoginIndexView from '@/views/user/UserLoginView'
+import UserFriendView from '@/views/user/UserFriendView'
                                 //@是指在src目录下
 const routes = [
   {
@@ -22,6 +23,11 @@ const routes = [
     component:ErrorIndexView,
   },
   
+  {
+    path:"/friend",
+    name:"friend",
+    component:UserFriendView,
+  }
 ]
 
 const router = createRouter({
