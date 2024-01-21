@@ -1,11 +1,11 @@
 <template>
-    <ContentBase>
+    <ContentBase style="margin-top:10px">
        <div class="row">
             <div class="col-3">
-                <FriendList :friends="friends"/>
+                <FriendList :friends="friends" @chatObjectName="ClickName"/>
             </div>
             <div class="col-9">
-                <FriendChat/>
+                <FriendChat :chatObjectName="chatObjectName"/>
             </div>
        </div>
     </ContentBase>
@@ -14,8 +14,8 @@
 <script>
 import ContentBase from '@/components/ContentBase.vue'
 import FriendList from '@/components/friend/FriendList.vue'
-import FriendChat from '@/components/friend/friendChat.vue'
-import { reactive } from 'vue'
+import FriendChat from '@/components/friend/FriendChat'
+import { reactive , ref} from 'vue'
 
 export default {
     components:{
@@ -40,12 +40,21 @@ export default {
                 }
             ]
         });
-    
+
+        let chatObjectName = ref("");
+
+        const ClickName = (name) => {
+            chatObjectName = name;
+            console.log(name);
+        }
+
         return {
             ContentBase,
             FriendList,
             FriendChat,
             friends,
+            ClickName,
+            chatObjectName,
         }
     },
     

@@ -15,6 +15,7 @@
               />
             </div>
             <button type="submit" class="btn btn-success">发送</button>
+            <label id="error_message"></label>
           </form>
         </div>
       </div>
@@ -51,7 +52,7 @@ export default {
     let username = localStorage.getItem("username");
     let socket = null;
     const socketUrl = `ws://localhost:3000/websocket/${userId}`;
-
+    
     onMounted(() => {
       socket = new WebSocket(socketUrl);
 
@@ -67,6 +68,7 @@ export default {
 
       socket.onclose = () => {
         console.log("disconnected!");
+
       };
     });
 
@@ -75,10 +77,33 @@ export default {
       localStorage.clear();
     });
 
+    const showErrorMessage = (errorDescription) =>{
+      var error = document.getElementById("error_message");
+      error.innerHTML = errorDescription;
+      error.style.visibility = "visible";
+    };
+
+    const hideErrorMessage = () =>{
+      var error = document.getElementById("error_message");
+      error.style.visibility = "hidden";
+    }
+
     //发送消息给后端服务器
     const sendMessageToServer = (message) => {
+      if(message === "" || message == null){      //若消息非空
+        showErrorMessage("消息不能为空");                       //显示错误信息
+        return;
+      }
+
+      if(socket.readyState != 1){                 //如果连接已经断开
+        showErrorMessage("连接已断开，无法通信，请尝试重新连接");
+        return;
+      }
+
       let data = username + "_" + message;
       socket.send(data);
+      hideErrorMessage();                         //隐藏错误信息
+      
     };
 
     //更新一下消息记录
@@ -94,6 +119,8 @@ export default {
     return {
       sendMessageToServer,
       updateMessages,
+      showErrorMessage,
+      hideErrorMessage,
       messages,
     };
   },
@@ -109,6 +136,11 @@ div.container {
   background-color: black;
   background-attachment: fixed;
   opacity: 80%;
+}
+#error_message{
+  color:red;
+  margin-left: 30%;
+  visibility: hidden;
 }
 #message_container{
   width: 100%;
