@@ -48,6 +48,7 @@ public class WebSocketServer {
 
         System.out.println("connected！该用户名ID为：" + token +" 当前在线人数为：" + OnlineUserNum);
         sendToAllUsers("[系统消息]:用户" + this.user.getUsername() + "已上线");
+        sendToAllUsers("?" + OnlineUserNum);                                     //和断开链接同理
     }
 
 
@@ -59,11 +60,13 @@ public class WebSocketServer {
         webSocketServerSet.remove(this);
         OnlineUserNum --;
         sendToAllUsers("[系统消息]:用户" + this.user.getUsername() + "已离线");
+        sendToAllUsers("?" + OnlineUserNum);                                    //断开链接以后发送减少后的在线人数，第一个字符用？来辨别是人数而不是发送的信息
     }
 
     @OnMessage
     public void onMessage(String message, Session session) {
         // 从Client接收消息
+        if(message == "") return;
         System.out.println("receive message:" + message);
         //sendMessage("receiveSuccess from:" + this.session.getId());
         sendToAllUsers(message);
@@ -75,7 +78,7 @@ public class WebSocketServer {
     }
 
 
-    //发送信息给前端
+    //发送信息给前端的函数
     public void sendMessage(String message){
         synchronized (this.session){        //不能改成final
             try{
@@ -86,7 +89,7 @@ public class WebSocketServer {
         }
     }
 
-    //发给所有在线的人
+    //发给所有在线的人的函数（批量调用发送函数）
     public void sendToAllUsers(String message){
         for(WebSocketServer item : webSocketServerSet){
             item.sendMessage(message);

@@ -1,5 +1,8 @@
 <template>
   <div class="container">
+    <div class="online_num">
+      当前在线人数:{{onlineNum}}
+    </div>
     <div class="messageSendBox">
       <div class="row justify-content-md-center">
         <div class="col-6">
@@ -33,7 +36,7 @@
 </template>
 
 <script>
-import { onMounted, onUnmounted, reactive} from "vue";
+import { onMounted, onUnmounted,ref, reactive} from "vue";
 export default {
   setup() {
     const messages = reactive({
@@ -52,18 +55,24 @@ export default {
     let username = localStorage.getItem("username");
     let socket = null;
     const socketUrl = `ws://localhost:3000/websocket/${userId}`;
+
+    let onlineNum = ref("");                //在线人数
     
     onMounted(() => {
       socket = new WebSocket(socketUrl);
 
       socket.onopen = () => {
         console.log("connected!");
+
       };
 
+      //从后端收到数据以后执行此函数
       socket.onmessage = (message) => {
-        updateMessages(message.data);
-        console.log(message.data);
-         
+        if(message.data[0] == '?'){
+          updateOnlineNum(message.data);
+          return ;
+        }     
+        updateMessages(message.data);          
       };
 
       socket.onclose = () => {
@@ -76,6 +85,7 @@ export default {
       socket.close();
       localStorage.clear();
     });
+    
 
     const showErrorMessage = (errorDescription) =>{
       var error = document.getElementById("error_message");
@@ -106,6 +116,7 @@ export default {
       
     };
 
+
     //更新一下消息记录
     const updateMessages = (message) => {
       messages.count ++;
@@ -115,13 +126,25 @@ export default {
         content:message.split("_")[1],
       })
     };
+    
+    //更新一下在线人数
+    const updateOnlineNum = (message) => {
+      let num = "";
+      for(let i = 1 ; i < message.length ; i ++){
+        num += message[i];
+      }
+      onlineNum.value = num;
+      console.log("在线人数：" + onlineNum.value);
+    }
 
     return {
       sendMessageToServer,
       updateMessages,
       showErrorMessage,
       hideErrorMessage,
+      updateOnlineNum,
       messages,
+      onlineNum,
     };
   },
 };
